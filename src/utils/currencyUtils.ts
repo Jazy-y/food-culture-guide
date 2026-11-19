@@ -1,4 +1,4 @@
-// Conversion rates to TND (Tunisian Dinar)
+// Exchange rates from TND (Tunisian Dinar): units of each currency for 1 TND.
 // These rates are examples and should be updated with real rates from an API in production
 const CONVERSION_RATES: { [key: string]: number } = {
   TND: 1.0,    // Tunisian Dinar (base currency)
@@ -43,9 +43,9 @@ export const convertPrice = (price: string | number, targetCurrency = "TND"): nu
     numericPrice = price;
   }
 
-  // Convert from TND to target currency
+  // Convert from TND to the target currency: 1 TND = rate units (e.g. 10 TND -> 3.20 USD)
   const conversionRate = CONVERSION_RATES[targetCurrency] || 1;
-  return numericPrice / conversionRate;
+  return numericPrice * conversionRate;
 };
 
 /**
