@@ -1,0 +1,66 @@
+# Installed dependencies and package manager state
+node_modules/
+.pnp*
+.npm/
+
+# Local environment files; safe templates remain visible
+.env
+.env.*
+!.env.template
+!.env.example
+
+# Credentials and signing material (including nested copies)
+*firebase-adminsdk*.json
+*service-account*.json
+*serviceAccount*.json
+credentials.json
+kaggle.json
+google-services.json
+GoogleService-Info.plist
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.mobileprovision
+.aws/
+.firebaserc
+
+# Expo, Metro, build and test output
+.expo/
+.expo-shared/
+.firebase/
+dist/
+web-build/
+build/
+coverage/
+.metro-health-check*
+*.tsbuildinfo
+*.log
+logs/
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Temporary files and private recovery copies
+tmp/
+temp/
+backups/
+*.bak
+*.old
+*.tmp
+*.orig
+*.orig.*
+package.json.new
+v1-before-cleanup*
+
+# Local editor and operating-system files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini

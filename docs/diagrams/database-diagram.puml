@@ -1,0 +1,269 @@
+@startuml Food Culture Guide Database
+
+' Style configurations for ER diagram
+skinparam linetype ortho
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+    FontSize 12
+    FontStyle bold
+}
+skinparam package {
+    BackgroundColor LightBlue
+    BorderColor Black
+    FontSize 14
+    FontStyle bold
+}
+skinparam note {
+    BackgroundColor LightYellow
+    BorderColor Black
+    FontSize 12
+}
+
+' MySQL Database Section
+package "MySQL Database" {
+    entity "users" as mysql_users {
+        * id : int <<PK>>
+        --
+        * username : varchar(255)
+        * email : varchar(255)
+        * password : varchar(255)
+    }
+}
+
+' Firebase Collections Section
+package "Firebase Collections" {
+    entity "users" as firebase_users {
+        * id : string <<PK>>
+        --
+        * email : string
+        * isAdmin : boolean
+        * displayName : string
+        * photoURL : string
+        * createdAt : timestamp
+        * preferredCurrency : string
+        * gender : string
+        * birthdate : string
+        * preferences : object
+        * subscriptionStatus : string
+        * lastLogin : timestamp
+        * usageStats : object
+        * profile : object
+    }
+
+    entity "restaurants" as firebase_restaurants {
+        * id : string <<PK>>
+        --
+        * name : string
+        * status : string
+        * createdAt : timestamp
+        * updatedAt : timestamp
+    }
+
+    entity "foodRecognition" as firebase_foodRecognition {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * imageUrl : string
+        * recognizedItems : array
+        * timestamp : timestamp
+        * status : string
+        * location : geopoint
+        * metadata : object
+    }
+
+    entity "scannedFoods" as firebase_scannedFoods {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * foodName : string
+        * timestamp : timestamp
+        * confidence : number
+        * imageUrl : string
+    }
+
+    entity "likedMeals" as firebase_likedMeals {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * mealId : string
+        * timestamp : timestamp
+    }
+
+    entity "mealReviews" as firebase_mealReviews {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * userName : string
+        * rating : number
+        * comment : string
+        * timestamp : timestamp
+    }
+
+    entity "feedback" as firebase_feedback {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * type : string
+        * message : string
+        * timestamp : timestamp
+        * status : string
+        * priority : string
+        * category : string
+        * response : string
+    }
+
+    entity "translations" as firebase_translations {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * sourceText : string
+        * translatedText : string
+        * sourceLanguage : string
+        * targetLanguage : string
+        * timestamp : timestamp
+        * voiceInput : boolean
+        * context : string
+        * confidence : number
+    }
+
+    entity "admin" as firebase_admin {
+        * id : string <<PK>>
+        --
+        * email : string
+        * permissions : array
+        * activityLog : array
+        * settings : object
+    }
+}
+
+' Analytics Collections Section
+package "Analytics Collections" {
+    entity "analytics_events" as analytics_events {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * eventType : string
+        * timestamp : timestamp
+        * data : object
+    }
+
+    entity "analytics_searches" as analytics_searches {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * searchTerm : string
+        * timestamp : timestamp
+        * results : number
+    }
+
+    entity "analytics_recognition" as analytics_recognition {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * recognitionType : string
+        * timestamp : timestamp
+        * accuracy : number
+    }
+
+    entity "analytics_food_stats" as analytics_food_stats {
+        * id : string <<PK>>
+        --
+        * foodId : string
+        * views : number
+        * likes : number
+        * shares : number
+    }
+
+    entity "analytics_search_terms" as analytics_search_terms {
+        * id : string <<PK>>
+        --
+        * term : string
+        * count : number
+        * lastSearched : timestamp
+    }
+
+    entity "analytics_user_stats" as analytics_user_stats {
+        * id : string <<PK>>
+        --
+        * userId : string <<FK>>
+        * totalScans : number
+        * totalLikes : number
+        * totalReviews : number
+    }
+
+    entity "analytics_global_stats" as analytics_global_stats {
+        * id : string <<PK>>
+        --
+        * totalUsers : number
+        * totalScans : number
+        * totalRecognition : number
+        * lastUpdated : timestamp
+    }
+}
+
+' User Relationships (One-to-Many)
+firebase_users ||--o{ firebase_scannedFoods : "creates"
+firebase_users ||--o{ firebase_likedMeals : "likes"
+firebase_users ||--o{ firebase_mealReviews : "writes"
+firebase_users ||--o{ firebase_feedback : "submits"
+firebase_users ||--o{ firebase_foodRecognition : "performs"
+firebase_users ||--o{ firebase_translations : "creates"
+firebase_users ||--o{ analytics_events : "generates"
+firebase_users ||--o{ analytics_searches : "performs"
+firebase_users ||--o{ analytics_recognition : "uses"
+
+' User Relationships (One-to-One)
+firebase_users ||--|| analytics_user_stats : "has"
+
+' Food Recognition Relationships
+firebase_foodRecognition ||--o{ firebase_scannedFoods : "creates"
+firebase_foodRecognition ||--o{ analytics_food_stats : "updates"
+
+' Restaurant Relationships
+firebase_restaurants ||--o{ firebase_mealReviews : "receives"
+firebase_restaurants ||--o{ firebase_likedMeals : "has"
+
+' Analytics Relationships
+analytics_food_stats ||--o{ analytics_global_stats : "contributes to"
+analytics_user_stats ||--o{ analytics_global_stats : "contributes to"
+analytics_search_terms ||--o{ analytics_searches : "used in"
+
+' Notes for clarity
+note right of firebase_users
+  Primary user collection
+  in Firebase
+end note
+
+note right of mysql_users
+  Authentication
+  user data
+end note
+
+note right of analytics_global_stats
+  System-wide
+  statistics
+end note
+
+note right of firebase_foodRecognition
+  Food recognition
+  results
+end note
+
+note right of firebase_mealReviews
+  User reviews
+  and ratings
+end note
+
+note right of firebase_restaurants
+  Restaurant
+  information
+end note
+
+note right of analytics_food_stats
+  Food-related
+  analytics
+end note
+
+@enduml 

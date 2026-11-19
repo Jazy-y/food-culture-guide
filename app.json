@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "Food Culture Guide",
+    "slug": "food-culture-guide",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/logo.png",
+    "splash": {
+      "image": "./src/assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to recognize food dishes.",
+        "NSPhotoLibraryUsageDescription": "This app uses photos from your library to recognize food dishes.",
+        "NSLocationWhenInUseUsageDescription": "Food Culture Guide uses your location to find restaurants near you."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/logo.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "permissions": [
+        "CAMERA",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./src/assets/logo.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to recognize food dishes."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "The app uses the camera to recognize food dishes."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Food Culture Guide uses your location to find restaurants near you."
+        }
+      ]
+    ]
+  }
+}

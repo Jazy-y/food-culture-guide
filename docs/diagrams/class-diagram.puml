@@ -1,0 +1,244 @@
+@startuml Food Culture Guide Class Diagram
+
+' Style configurations for better readability
+skinparam linetype ortho
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+    FontSize 12
+    FontStyle bold
+}
+skinparam package {
+    BackgroundColor LightBlue
+    BorderColor Black
+    FontSize 14
+    FontStyle bold
+}
+skinparam note {
+    BackgroundColor LightYellow
+    BorderColor Black
+    FontSize 12
+}
+
+' Title and description
+title Système de Guide Culturel Alimentaire - Diagramme de Classes
+caption Un système complet pour la reconnaissance alimentaire, les insights culturels et l'engagement utilisateur
+
+' ========== CORE ENTITIES ==========
+package "Entités Principales" {
+    class User {
+        - id: string
+        - email: string
+        - username: string
+        - password: string
+        - isAdmin: boolean
+        - displayName: string
+        - photoURL: string
+        - createdAt: Date
+        - preferredCurrency: string
+        - gender: string
+        - birthdate: Date
+        - preferences: object
+        - subscriptionStatus: string
+        - lastLogin: Date
+        - usageStats: object
+        - profile: object
+    }
+
+    class Admin {
+        - id: string
+        - email: string
+        - permissions: array
+        - activityLog: array
+        - settings: object
+    }
+
+    class Restaurant {
+        - id: string
+        - name: string
+        - status: string
+        - createdAt: Date
+        - updatedAt: Date
+    }
+}
+
+' ========== FOOD RECOGNITION SYSTEM ==========
+package "Système de Reconnaissance Alimentaire" {
+    class FoodRecognition {
+        - id: string
+        - userId: string
+        - imageUrl: string
+        - recognizedItems: array
+        - timestamp: Date
+        - status: string
+        - location: GeoPoint
+        - metadata: object
+    }
+
+    class ScannedFood {
+        - id: string
+        - userId: string
+        - foodName: string
+        - timestamp: Date
+        - confidence: number
+        - imageUrl: string
+    }
+
+    class LikedMeal {
+        - id: string
+        - userId: string
+        - mealId: string
+        - timestamp: Date
+    }
+
+    class MealReview {
+        - id: string
+        - userId: string
+        - userName: string
+        - rating: number
+        - comment: string
+        - timestamp: Date
+    }
+}
+
+' ========== USER INTERACTION ==========
+package "Interaction Utilisateur" {
+    class Feedback {
+        - id: string
+        - userId: string
+        - type: string
+        - message: string
+        - timestamp: Date
+        - status: string
+        - priority: string
+        - category: string
+        - response: string
+    }
+
+    class Translation {
+        - id: string
+        - userId: string
+        - sourceText: string
+        - translatedText: string
+        - sourceLanguage: string
+        - targetLanguage: string
+        - timestamp: Date
+        - voiceInput: boolean
+        - context: string
+        - confidence: number
+    }
+}
+
+' ========== ANALYTICS SYSTEM ==========
+package "Système d'Analyse" {
+    class AnalyticsEvent {
+        - id: string
+        - userId: string
+        - eventType: string
+        - timestamp: Date
+        - data: object
+    }
+
+    class AnalyticsSearch {
+        - id: string
+        - userId: string
+        - searchTerm: string
+        - timestamp: Date
+        - results: number
+    }
+
+    class AnalyticsRecognition {
+        - id: string
+        - userId: string
+        - recognitionType: string
+        - timestamp: Date
+        - accuracy: number
+    }
+
+    class AnalyticsFoodStats {
+        - id: string
+        - foodId: string
+        - views: number
+        - likes: number
+        - shares: number
+    }
+
+    class AnalyticsSearchTerm {
+        - id: string
+        - term: string
+        - count: number
+        - lastSearched: Date
+    }
+
+    class AnalyticsUserStats {
+        - id: string
+        - userId: string
+        - totalScans: number
+        - totalLikes: number
+        - totalReviews: number
+    }
+
+    class AnalyticsGlobalStats {
+        - id: string
+        - totalUsers: number
+        - totalScans: number
+        - totalRecognition: number
+        - lastUpdated: Date
+    }
+}
+
+' ========== RELATIONSHIPS ==========
+
+' User Relationships
+User "1" -- "0..*" ScannedFood : "crée"
+User "1" -- "0..*" LikedMeal : "aime"
+User "1" -- "0..*" MealReview : "écrit"
+User "1" -- "0..*" Feedback : "soumet"
+User "1" -- "0..*" FoodRecognition : "effectue"
+User "1" -- "0..*" Translation : "crée"
+User "1" -- "0..*" AnalyticsEvent : "génère"
+User "1" -- "0..*" AnalyticsSearch : "effectue"
+User "1" -- "0..*" AnalyticsRecognition : "utilise"
+User "1" -- "1" AnalyticsUserStats : "possède"
+
+' Restaurant Relationships
+Restaurant "1" -- "0..*" MealReview : "reçoit"
+Restaurant "1" -- "0..*" LikedMeal : "possède"
+
+' Food Recognition Relationships
+FoodRecognition "1" -- "0..*" ScannedFood : "crée"
+FoodRecognition "1" -- "0..*" AnalyticsFoodStats : "met à jour"
+
+' Analytics Relationships
+AnalyticsFoodStats "0..*" -- "1" AnalyticsGlobalStats : "contribue à"
+AnalyticsUserStats "0..*" -- "1" AnalyticsGlobalStats : "contribue à"
+AnalyticsSearchTerm "0..*" -- "0..*" AnalyticsSearch : "utilisé dans"
+
+' Notes for clarity
+note right of User
+  Entité utilisateur
+  principale avec
+  authentification
+  et données de profil
+end note
+
+note right of FoodRecognition
+  Gère la reconnaissance
+  et l'analyse
+  des aliments
+end note
+
+note right of AnalyticsGlobalStats
+  Statistiques et
+  métriques
+  système
+end note
+
+note right of Restaurant
+  Informations et
+  statut du
+  restaurant
+end note
+
+@enduml 

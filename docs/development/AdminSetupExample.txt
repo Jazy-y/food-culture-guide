@@ -1,0 +1,41 @@
+> Historical implementation notes. For current installation and configuration, see [README](../../README.md). Some described behavior is experimental.
+
+Example of how to set up an admin user
+
+INSTRUCTIONS:
+1. Copy the code below to your app entry point (App.js or index.js)
+2. Replace 'your-admin-email@example.com' with the actual admin email
+3. Run the app once to set the user as admin
+4. Remove this code after the admin is set up
+
+Example implementation:
+
+```jsx
+import React, { useEffect } from 'react';
+import { setupInitialAdmin } from './src/utils/setupInitialAdmin';
+import { Text, View } from 'react-native';
+
+// Main App component
+const App = () => {
+  useEffect(() => {
+    // Set up the initial admin user - ONLY RUN THIS ONCE
+    // After running once, comment out this line
+    setupInitialAdmin('your-admin-email@example.com');
+  }, []);
+
+  return (
+    <View>
+      <Text>Food Culture Guide</Text>
+      {/* Rest of your app */}
+    </View>
+  );
+};
+
+export default App;
+```
+
+IMPORTANT NOTES:
+- The user must already exist in Firebase Authentication
+- The user must have signed in at least once 
+- After setting up the admin, remove this code to prevent security issues
+- To verify admin access, log in as the admin user and check the Admin Dashboard 
